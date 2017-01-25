@@ -2,9 +2,11 @@ package es.cice.toolbartest.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -43,14 +45,41 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> impl
         LayoutInflater inflater=LayoutInflater.from(ctx);
         View row=inflater.inflate(R.layout.car_row,parent,false);
         ViewHolder holder=new ViewHolder(row);
+
+
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(CarAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final CarAdapter.ViewHolder holder, int position) {
         holder.carIV.setImageResource(carList.get(position).getMiniatura());
         holder.carTV.setText(carList.get(position).getFabricante() + " " +
                 carList.get(position).getModelo());
+
+        holder.vElipsisTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("Elipsis","onclick()...");
+                PopupMenu popup=new PopupMenu(ctx,holder.vElipsisTV);
+                popup.inflate(R.menu.car_popup);
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch(item.getItemId()){
+                            case R.id.deleteCarItem:
+                                Log.d("Elipsis","delete...");
+                                carList.remove(holder.getAdapterPosition());
+                                notifyDataSetChanged();
+                                break;
+                            case R.id.detailsCarItem:
+                                break;
+                        }
+                        return true;
+                    }
+                });
+                popup.show();
+            }
+        });
     }
 
     @Override
@@ -66,11 +95,14 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> impl
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView carIV;
         private TextView carTV;
+        private TextView vElipsisTV;
 
         public ViewHolder(View itemView) {
             super(itemView);
             carIV= (ImageView) itemView.findViewById(R.id.carThumbIV);
             carTV= (TextView) itemView.findViewById(R.id.carNameTV);
+            vElipsisTV= (TextView) itemView.findViewById(R.id.vElipsis);
+
             carIV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -85,7 +117,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> impl
                     intent.putExtra(CarDetailActivity.FABRICANTE_EXTRA,
                             carList.get(getAdapterPosition()).getFabricante());
                     intent.putExtra(CarDetailActivity.MODELO_EXTRA,
-                            carList.get(getAdapterPosition()).getModelo());
+               Log.d("Elipsis","onclick()...");             carList.get(getAdapterPosition()).getModelo());
                     ctx.startActivity(intent);*/
                 }
             });
