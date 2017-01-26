@@ -28,8 +28,16 @@ import es.cice.toolbartest.model.Car;
  */
 
 public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> implements Filterable{
-    private List<Car> carList;
+    public List<Car> carList;
     private Context ctx;
+
+
+    public void appendCar(String model,String fabricante){
+        Car car=new Car(null,fabricante,R.drawable.ic_car,R.drawable.ic_car,model);
+        carList.add(car);
+        notifyDataSetChanged();
+    }
+
 
 
     public CarAdapter(Context ctx, List<Car> list){
@@ -49,6 +57,8 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> impl
 
         return holder;
     }
+
+
 
     @Override
     public void onBindViewHolder(final CarAdapter.ViewHolder holder, int position) {

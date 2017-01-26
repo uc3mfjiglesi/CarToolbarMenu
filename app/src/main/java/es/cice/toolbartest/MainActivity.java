@@ -13,6 +13,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -23,13 +24,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.cice.toolbartest.adapters.CarAdapter;
+import es.cice.toolbartest.dialogs.AddCarDialog;
 import es.cice.toolbartest.model.Car;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AddCarDialog.AddCarInterface{
     public static final String TAG="MainActivity";
     private EditText searchET;
     private ActionBar aBar;
     private CarAdapter adapter;
+    private List<Car> data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +42,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         aBar=getSupportActionBar();
         RecyclerView carRV= (RecyclerView) findViewById(R.id.carRV);
-        adapter=new CarAdapter(this,getData());
+        data=getData();
+        adapter=new CarAdapter(this,data);
         carRV.setAdapter(adapter);
         carRV.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -51,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.toolbar_menu,menu);
         return true;
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -111,5 +117,19 @@ public class MainActivity extends AppCompatActivity {
         list.add(new Car("bla bla bla","Peugeot",R.drawable.vehiculo5,R.drawable.vehiculo5_thumb,
                 "407"));
         return list;
+    }
+
+    @Override
+    public void addCar(String model, String fabricante) {
+        Car car=new Car(null,fabricante,R.drawable.ic_car,R.drawable.ic_car,model);
+        data.add(car);
+        adapter.notifyDataSetChanged();
+
+    }
+
+    public void addCar(View v){
+        Log.d(TAG,"addCar()...");
+        AddCarDialog dialog=new AddCarDialog();
+        dialog.show(getFragmentManager(),"AddCarDialog");
     }
 }
